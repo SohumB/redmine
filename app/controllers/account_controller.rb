@@ -15,10 +15,16 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+require 'openid/extensions/sreg'
+OpenID::SReg::DATA_FIELDS["charname"] = "Character Name"
+OpenID::SReg::DATA_FIELDS["username"] = "User Name"
+OpenID::SReg::DATA_FIELDS["faction"] = "Faction"
+
 class AccountController < ApplicationController
   helper :custom_fields
   include CustomFieldsHelper   
-  
+  SKYRATES_OPENID_DISCOVER = "http://skyrates.net/OpenID/"
+
   # prevents login action to be filtered by check_if_login_required application scope filter
   skip_before_filter :check_if_login_required
 
@@ -158,7 +164,7 @@ class AccountController < ApplicationController
 
   
   def open_id_authenticate(openid_url)
-    authenticate_with_open_id(openid_url, :required => [:nickname, :fullname, :email], :return_to => signin_url) do |result, identity_url, registration|
+    authenticate_with_open_id(openid_url, :required => [:charname, :email, :username, :faction], :return_to => signin_url) do |result, identity_url, registration|
       if result.successful?
         user = User.find_or_initialize_by_identity_url(identity_url)
         if user.new_record?
@@ -166,9 +172,10 @@ class AccountController < ApplicationController
           redirect_to(home_url) && return unless Setting.self_registration?
 
           # Create on the fly
-          user.login = registration['nickname'] unless registration['nickname'].nil?
-          user.mail = registration['email'] unless registration['email'].nil?
-          user.firstname, user.lastname = registration['fullname'].split(' ') unless registration['fullname'].nil?
+          user.login = registration['username'] unless registration['username'].nil?
+          user.mail = registration['email'] || "#{registration['username']}@skyrates.net"
+          user.firstname = registration['charname'] unless registration['charname'].nil?
+          user.lastname = registration['faction'] unless registration['faction'].nil?
           user.random_password
           user.register
 

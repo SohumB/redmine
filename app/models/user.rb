@@ -26,10 +26,10 @@ class User < Principal
   STATUS_LOCKED     = 3
   
   USER_FORMATS = {
-    :firstname_lastname => '#{firstname} #{lastname}',
+    :firstname_lastname => '#{firstname} (#{lastname})',
     :firstname => '#{firstname}',
-    :lastname_firstname => '#{lastname} #{firstname}',
-    :lastname_coma_firstname => '#{lastname}, #{firstname}',
+    :lastname_firstname => '#{lastname} member #{firstname}',
+    :lastname_coma_firstname => '#{lastname} member, #{firstname}',
     :username => '#{login}'
   }
 
