@@ -75,40 +75,40 @@ class AccountController < ApplicationController
   end
   
   # User self-registration
-  def register
-    redirect_to(home_url) && return unless Setting.self_registration? || session[:auth_source_registration]
-    if request.get?
-      session[:auth_source_registration] = nil
-      @user = User.new(:language => Setting.default_language)
-    else
-      @user = User.new(params[:user])
-      @user.admin = false
-      @user.register
-      if session[:auth_source_registration]
-        @user.activate
-        @user.login = session[:auth_source_registration][:login]
-        @user.auth_source_id = session[:auth_source_registration][:auth_source_id]
-        if @user.save
-          session[:auth_source_registration] = nil
-          self.logged_user = @user
-          flash[:notice] = l(:notice_account_activated)
-          redirect_to :controller => 'my', :action => 'account'
-        end
-      else
-        @user.login = params[:user][:login]
-        @user.password, @user.password_confirmation = params[:password], params[:password_confirmation]
+  # def register
+  #   redirect_to(home_url) && return unless Setting.self_registration? || session[:auth_source_registration]
+  #   if request.get?
+  #     session[:auth_source_registration] = nil
+  #     @user = User.new(:language => Setting.default_language)
+  #   else
+  #     @user = User.new(params[:user])
+  #     @user.admin = false
+  #     @user.register
+  #     if session[:auth_source_registration]
+  #       @user.activate
+  #       @user.login = session[:auth_source_registration][:login]
+  #       @user.auth_source_id = session[:auth_source_registration][:auth_source_id]
+  #       if @user.save
+  #         session[:auth_source_registration] = nil
+  #         self.logged_user = @user
+  #         flash[:notice] = l(:notice_account_activated)
+  #         redirect_to :controller => 'my', :action => 'account'
+  #       end
+  #     else
+  #       @user.login = params[:user][:login]
+  #       @user.password, @user.password_confirmation = params[:password], params[:password_confirmation]
 
-        case Setting.self_registration
-        when '1'
-          register_by_email_activation(@user)
-        when '3'
-          register_automatically(@user)
-        else
-          register_manually_by_administrator(@user)
-        end
-      end
-    end
-  end
+  #       case Setting.self_registration
+  #       when '1'
+  #         register_by_email_activation(@user)
+  #       when '3'
+  #         register_automatically(@user)
+  #       else
+  #         register_manually_by_administrator(@user)
+  #       end
+  #     end
+  #   end
+  # end
   
   # Token based account activation
   def activate
@@ -136,25 +136,25 @@ class AccountController < ApplicationController
   end
   
   def authenticate_user
-    if Setting.openid? && using_open_id?
-      open_id_authenticate(params[:openid_url])
-    else
-      password_authentication
-    end
+  #  if Setting.openid? && using_open_id?
+      open_id_authenticate(SKYRATES_OPENID_DISCOVER)
+  #  else
+  #    password_authentication
+  #  end
   end
 
-  def password_authentication
-    user = User.try_to_login(params[:username], params[:password])
+  # def password_authentication
+  #   user = User.try_to_login(params[:username], params[:password])
 
-    if user.nil?
-      invalid_credentials
-    elsif user.new_record?
-      onthefly_creation_failed(user, {:login => user.login, :auth_source_id => user.auth_source_id })
-    else
-      # Valid user
-      successful_authentication(user)
-    end
-  end
+  #   if user.nil?
+  #     invalid_credentials
+  #   elsif user.new_record?
+  #     onthefly_creation_failed(user, {:login => user.login, :auth_source_id => user.auth_source_id })
+  #   else
+  #     # Valid user
+  #     successful_authentication(user)
+  #   end
+  # end
 
   
   def open_id_authenticate(openid_url)
