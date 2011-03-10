@@ -173,7 +173,7 @@ class AccountController < ApplicationController
 
           # Create on the fly
           user.login = registration['username'] unless registration['username'].nil?
-          user.mail = registration['email'] || "#{registration['username'].gsub(' ','_')}@skyrates.net"
+          user.mail = registration['email'] || "nowhere@skyrates.net"
           user.firstname = registration['charname'] unless registration['charname'].nil?
           user.lastname = registration['faction'] unless registration['faction'].nil?
           user.random_password
