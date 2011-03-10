@@ -53,6 +53,7 @@ module Redmine
         end
 
         def default_branch
+          return 'skybug' if branches.include?('skybug')
           branches.include?('master') ? 'master' : branches.first 
         end
         
