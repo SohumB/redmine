@@ -30,11 +30,9 @@ class AccountController < ApplicationController
 
   # Login request and validation
   def login
-    # if request.get?
-      logout_user
-    # else
-      authenticate_user
-    # end
+    logout_user
+    redirect_to home_url if params['openid.mode'] == 'cancel'
+    authenticate_user
   end
 
   # Log out current user and redirect to welcome page
