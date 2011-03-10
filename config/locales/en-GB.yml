@@ -201,8 +201,8 @@ en-GB:
   field_description: Description
   field_summary: Summary
   field_is_required: Required
-  field_firstname: Firstname
-  field_lastname: Lastname
+  field_firstname: Name
+  field_lastname: Faction
   field_mail: Email
   field_filename: File
   field_filesize: Size
