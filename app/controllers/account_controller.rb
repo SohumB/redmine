@@ -212,7 +212,7 @@ class AccountController < ApplicationController
       cookies[:autologin] = { :value => token.value, :expires => 1.year.from_now }
     end
     call_hook(:controller_account_success_authentication_after, {:user => user })
-    redirect_back_or_default :controller => 'my', :action => 'page'
+    redirect_back_or_default home_url
   end
 
   # Onthefly creation failed, display the registration form to fill/fix attributes
